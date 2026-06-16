@@ -1,0 +1,34 @@
+{
+  "name": "Retail Postventa",
+  "dataColors": [
+    "#1A73E8",
+    "#34A853",
+    "#EA4335",
+    "#FBBC04",
+    "#46BDC6",
+    "#7B61FF"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#202124",
+  "tableAccent": "#1A73E8",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "fontFamily": [{"value": "Segoe UI"}],
+        "fontSize": [{"value": 11}]
+      }
+    },
+    "card": {
+      "*": {
+        "calloutValue": [{"fontSize": 28, "fontBold": true}],
+        "categoryLabel": [{"fontSize": 12, "color": {"solid": {"color": "#5F6368"}}}]
+      }
+    },
+    "lineChart": {
+      "*": {
+        "lineWidth": [{"value": 2}],
+        "markerEnabled": [{"value": true}]
+      }
+    }
+  }
+}
