@@ -74,3 +74,52 @@ def test_shipments_late_flag_matches_dates(shipments: pd.DataFrame) -> None:
 def test_shipments_late_rate_in_expected_range(shipments: pd.DataFrame) -> None:
     late_rate = shipments["is_late"].mean()
     assert 0.05 < late_rate < 0.35, f"Unexpected late rate: {late_rate:.2%}"
+
+
+# ── Contacts ─────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def contacts(orders: pd.DataFrame, shipments: pd.DataFrame) -> pd.DataFrame:
+    from data_gen.generar_contacts import generate_contacts
+
+    return generate_contacts(orders, shipments, seed=42)
+
+
+def test_contacts_reference_valid_orders(orders: pd.DataFrame, contacts: pd.DataFrame) -> None:
+    assert contacts["order_id"].isin(orders["order_id"]).all()
+
+
+def test_contacts_date_after_delivery(shipments: pd.DataFrame, contacts: pd.DataFrame) -> None:
+    merged = contacts.merge(
+        shipments[["order_id", "actual_delivery_date"]], on="order_id", how="left"
+    )
+    contact_dates = pd.to_datetime(merged["contact_date"])
+    delivery_dates = pd.to_datetime(merged["actual_delivery_date"])
+    assert (contact_dates > delivery_dates).all()
+
+
+def test_abandoned_contacts_have_null_metrics(contacts: pd.DataFrame) -> None:
+    abandoned = contacts[contacts["is_abandoned"]]
+    if len(abandoned) == 0:
+        pytest.skip("No abandoned contacts in sample")
+    for col in ["agent_id", "aht_seconds", "csat_score", "fcr"]:
+        assert abandoned[col].isna().all(), f"Abandoned contact has non-null {col}"
+
+
+def test_handled_contacts_have_metrics(contacts: pd.DataFrame) -> None:
+    handled = contacts[~contacts["is_abandoned"]]
+    assert len(handled) > 0
+    for col in ["agent_id", "aht_seconds", "csat_score", "fcr"]:
+        assert handled[col].notna().all(), f"Handled contact has null {col}"
+
+
+def test_late_orders_have_higher_contact_rate(
+    shipments: pd.DataFrame, contacts: pd.DataFrame
+) -> None:
+    contacted_orders = set(contacts["order_id"].unique())
+    late_orders = set(shipments[shipments["is_late"]]["order_id"])
+    ontime_orders = set(shipments[~shipments["is_late"]]["order_id"])
+    late_rate = len(contacted_orders & late_orders) / max(len(late_orders), 1)
+    ontime_rate = len(contacted_orders & ontime_orders) / max(len(ontime_orders), 1)
+    assert late_rate > ontime_rate
