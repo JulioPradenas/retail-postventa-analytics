@@ -123,3 +123,35 @@ def test_late_orders_have_higher_contact_rate(
     late_rate = len(contacted_orders & late_orders) / max(len(late_orders), 1)
     ontime_rate = len(contacted_orders & ontime_orders) / max(len(ontime_orders), 1)
     assert late_rate > ontime_rate
+
+
+# ── Returns ──────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def returns(orders: pd.DataFrame, shipments: pd.DataFrame) -> pd.DataFrame:
+    from data_gen.generar_returns import generate_returns
+
+    return generate_returns(orders, shipments, seed=42)
+
+
+def test_returns_reference_valid_orders(orders: pd.DataFrame, returns: pd.DataFrame) -> None:
+    assert returns["order_id"].isin(orders["order_id"]).all()
+
+
+def test_returns_date_after_delivery(shipments: pd.DataFrame, returns: pd.DataFrame) -> None:
+    merged = returns.merge(
+        shipments[["order_id", "actual_delivery_date"]], on="order_id", how="left"
+    )
+    return_dates = pd.to_datetime(merged["return_date"])
+    delivery_dates = pd.to_datetime(merged["actual_delivery_date"])
+    assert (return_dates > delivery_dates).all()
+
+
+def test_returns_rate_in_expected_range(orders: pd.DataFrame, returns: pd.DataFrame) -> None:
+    rate = len(returns) / len(orders)
+    assert 0.05 < rate < 0.25, f"Unexpected return rate: {rate:.2%}"
+
+
+def test_returns_unique_order_ids(returns: pd.DataFrame) -> None:
+    assert returns["order_id"].is_unique
