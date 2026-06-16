@@ -40,3 +40,37 @@ def test_orders_date_in_2024(orders: pd.DataFrame) -> None:
 def test_orders_segment_values(orders: pd.DataFrame) -> None:
     valid = {"nuevo", "recurrente", "VIP"}
     assert set(orders["customer_segment"].unique()).issubset(valid)
+
+
+# ── Shipments ────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def shipments(orders: pd.DataFrame) -> pd.DataFrame:
+    from data_gen.generar_shipments import generate_shipments
+
+    return generate_shipments(orders, seed=42)
+
+
+def test_shipments_one_per_order(orders: pd.DataFrame, shipments: pd.DataFrame) -> None:
+    assert len(shipments) == len(orders)
+    assert set(shipments["order_id"]) == set(orders["order_id"])
+
+
+def test_shipments_promised_date_after_order_date(shipments: pd.DataFrame) -> None:
+    order_dates = pd.to_datetime(shipments["order_date"])
+    promised_dates = pd.to_datetime(shipments["promised_date"])
+    assert (promised_dates >= order_dates).all()
+
+
+def test_shipments_late_flag_matches_dates(shipments: pd.DataFrame) -> None:
+    promised = pd.to_datetime(shipments["promised_date"])
+    actual = pd.to_datetime(shipments["actual_delivery_date"])
+    is_late = shipments["is_late"].astype(bool)
+    assert (actual[is_late] > promised[is_late]).all()
+    assert (actual[~is_late] <= promised[~is_late]).all()
+
+
+def test_shipments_late_rate_in_expected_range(shipments: pd.DataFrame) -> None:
+    late_rate = shipments["is_late"].mean()
+    assert 0.05 < late_rate < 0.35, f"Unexpected late rate: {late_rate:.2%}"
