@@ -1,0 +1,29 @@
+name: 'retail_postventa'
+version: '1.0.0'
+profile: 'retail_postventa'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  retail_postventa:
+    staging:
+      +materialized: view
+      +schema: staging
+    dimensions:
+      +materialized: table
+      +schema: dimensional
+    facts:
+      +materialized: table
+      +schema: dimensional
+    marts:
+      +materialized: table
+      +schema: marts

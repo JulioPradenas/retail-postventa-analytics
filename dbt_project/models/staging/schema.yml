@@ -1,0 +1,116 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Órdenes e-commerce con tipos normalizados. Un registro por orden."
+    columns:
+      - name: order_id
+        description: "Identificador único de la orden."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - not_null
+      - name: customer_segment
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['nuevo', 'recurrente', 'VIP']
+      - name: region
+        data_tests:
+          - not_null
+      - name: order_date
+        data_tests:
+          - not_null
+      - name: total_amount
+        data_tests:
+          - not_null
+
+  - name: stg_shipments
+    description: "Despachos 1:1 con órdenes. Incluye flag de atraso y días de delay."
+    columns:
+      - name: shipment_id
+        description: "Identificador único del despacho."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: actual_delivery_date
+        data_tests:
+          - not_null
+      - name: is_late
+        data_tests:
+          - not_null
+
+  - name: stg_contacts
+    description: "Contactos postventa. Abandonados tienen aht/csat/fcr/agent_id en NULL."
+    columns:
+      - name: contact_id
+        description: "Identificador único del contacto."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: contact_date
+        data_tests:
+          - not_null
+      - name: is_abandoned
+        data_tests:
+          - not_null
+
+  - name: stg_returns
+    description: "Devoluciones de producto. Máximo una por orden."
+    columns:
+      - name: return_id
+        description: "Identificador único de la devolución."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: return_date
+        data_tests:
+          - not_null
+
+  - name: stg_surveys
+    description: "Encuestas post-contacto. Solo para contactos no abandonados."
+    columns:
+      - name: survey_id
+        description: "Identificador único de la encuesta."
+        data_tests:
+          - unique
+          - not_null
+      - name: contact_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_contacts')
+                field: contact_id
+      - name: nps_score
+        data_tests:
+          - not_null
+      - name: overall_satisfaction
+        data_tests:
+          - not_null
