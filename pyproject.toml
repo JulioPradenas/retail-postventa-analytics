@@ -4,7 +4,10 @@ version = "0.1.0"
 description = "Analítica end-to-end de postventa e-commerce retail LATAM"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "numpy>=2.4.6",
+    "pandas>=3.0.3",
+]
 
 [tool.ruff]
 line-length = 100
@@ -27,6 +30,10 @@ python_version = "3.11"
 strict = true
 ignore_missing_imports = true
 warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
 
 [dependency-groups]
 dev = [
