@@ -1,8 +1,6 @@
 # Retail Postventa Analytics
 
-<!-- CI badge — agregar después de crear el repo en GitHub:
-![CI](https://github.com/<tu-usuario>/retail-postventa-analytics/actions/workflows/ci.yml/badge.svg)
--->
+![CI](https://github.com/JulioPradenas/retail-postventa-analytics/actions/workflows/ci.yml/badge.svg)
 
 Proyecto de portafolio de Data Analyst. Analítica end-to-end de postventa
 e-commerce retail LATAM (inspirado en Lider.cl / Walmart Chile). Datos 100% sintéticos.
