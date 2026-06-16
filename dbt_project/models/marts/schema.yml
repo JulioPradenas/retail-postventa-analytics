@@ -1,0 +1,109 @@
+version: 2
+
+models:
+  - name: mart_cpo_semanal
+    description: "CPO (contactos por orden) por semana. Grain: semana."
+    columns:
+      - name: week_start
+        description: "Lunes de la semana."
+        data_tests:
+          - unique
+          - not_null
+      - name: n_orders
+        data_tests:
+          - not_null
+      - name: cpo
+        data_tests:
+          - not_null
+
+  - name: mart_cpo_por_motivo
+    description: "Volumen y participación de contactos por motivo. Grain: motivo."
+    columns:
+      - name: contact_motivo
+        description: "Motivo del contacto postventa."
+        data_tests:
+          - unique
+          - not_null
+      - name: n_contacts
+        data_tests:
+          - not_null
+      - name: pct_of_contacts
+        data_tests:
+          - not_null
+
+  - name: mart_otd_vs_sla
+    description: "OTD y días de atraso por carrier y zona. Grain: carrier × zona."
+    columns:
+      - name: carrier
+        data_tests:
+          - not_null
+      - name: zone
+        data_tests:
+          - not_null
+      - name: otd_rate
+        data_tests:
+          - not_null
+
+  - name: mart_correlacion_otd_cpo
+    description: >
+      ⭐ Insight estrella: OTD y CPO por semana con bucket de OTD.
+      Permite ver cómo sube el CPO cuando baja el OTD.
+      Grain: semana.
+    columns:
+      - name: week_start
+        description: "Lunes de la semana."
+        data_tests:
+          - unique
+          - not_null
+      - name: otd_rate
+        data_tests:
+          - not_null
+      - name: cpo
+        data_tests:
+          - not_null
+      - name: otd_bucket
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['OTD >= 90%', 'OTD 80-90%', 'OTD < 80%']
+
+  - name: mart_devoluciones_motivo
+    description: "Devoluciones por motivo con indicador de relación con atrasos. Grain: motivo."
+    columns:
+      - name: return_motivo
+        description: "Motivo de la devolución."
+        data_tests:
+          - unique
+          - not_null
+      - name: n_returns
+        data_tests:
+          - not_null
+
+  - name: mart_kpis_contact_center
+    description: "KPIs operativos del contact center por semana. Grain: semana."
+    columns:
+      - name: week_start
+        data_tests:
+          - unique
+          - not_null
+      - name: n_contacts_total
+        data_tests:
+          - not_null
+      - name: abandon_rate
+        data_tests:
+          - not_null
+      - name: fcr_rate
+        data_tests:
+          - not_null
+
+  - name: mart_alerts_diarias
+    description: >
+      KPIs diarios fuera de umbral con nivel de prioridad (P1/P2) y owner.
+      Solo incluye días con al menos una alerta activa. Grain: fecha.
+    columns:
+      - name: metric_date
+        description: "Fecha de la alerta."
+        data_tests:
+          - unique
+          - not_null
