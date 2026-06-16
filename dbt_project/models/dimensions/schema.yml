@@ -1,0 +1,47 @@
+version: 2
+
+models:
+  - name: dim_clientes
+    description: "Un registro por cliente con su segmento más reciente."
+    columns:
+      - name: customer_id
+        description: "Identificador único del cliente."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_segment
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['nuevo', 'recurrente', 'VIP']
+
+  - name: dim_productos
+    description: "Catálogo de productos únicos con precio de referencia."
+    columns:
+      - name: product_sku
+        description: "SKU único del producto."
+        data_tests:
+          - unique
+          - not_null
+      - name: product_name
+        data_tests:
+          - not_null
+      - name: product_category
+        data_tests:
+          - not_null
+
+  - name: dim_carriers
+    description: "Carriers de despacho con su modalidad (express/estándar)."
+    columns:
+      - name: carrier
+        description: "Nombre del carrier."
+        data_tests:
+          - unique
+          - not_null
+      - name: carrier_modality
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['express', 'normal']

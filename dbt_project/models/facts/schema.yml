@@ -1,0 +1,70 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: >
+      Tabla de hechos central. Grain: una fila por orden (= un despacho).
+      Combina orden + despacho con métricas de entrega.
+    columns:
+      - name: order_id
+        description: "Clave primaria — identificador único de la orden."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_clientes')
+                field: customer_id
+      - name: product_sku
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_productos')
+                field: product_sku
+      - name: carrier
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_carriers')
+                field: carrier
+      - name: order_date
+        data_tests:
+          - not_null
+      - name: actual_delivery_date
+        data_tests:
+          - not_null
+      - name: is_late
+        data_tests:
+          - not_null
+      - name: total_amount
+        data_tests:
+          - not_null
+
+  - name: fct_contacts
+    description: >
+      Tabla de hechos de contactos postventa. Grain: una fila por contacto.
+      Incluye contexto de la orden y el despacho asociado.
+    columns:
+      - name: contact_id
+        description: "Clave primaria — identificador único del contacto."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: contact_date
+        data_tests:
+          - not_null
+      - name: is_abandoned
+        data_tests:
+          - not_null
