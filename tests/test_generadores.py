@@ -155,3 +155,39 @@ def test_returns_rate_in_expected_range(orders: pd.DataFrame, returns: pd.DataFr
 
 def test_returns_unique_order_ids(returns: pd.DataFrame) -> None:
     assert returns["order_id"].is_unique
+
+
+# ── Surveys ───────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture(scope="module")
+def surveys(contacts: pd.DataFrame) -> pd.DataFrame:
+    from data_gen.generar_surveys import generate_surveys
+
+    return generate_surveys(contacts, seed=42)
+
+
+def test_surveys_reference_non_abandoned_contacts(
+    contacts: pd.DataFrame, surveys: pd.DataFrame
+) -> None:
+    handled_ids = set(contacts[~contacts["is_abandoned"]]["contact_id"])
+    assert surveys["contact_id"].isin(handled_ids).all()
+
+
+def test_surveys_unique_contact_ids(surveys: pd.DataFrame) -> None:
+    assert surveys["contact_id"].is_unique
+
+
+def test_surveys_nps_in_range(surveys: pd.DataFrame) -> None:
+    assert surveys["nps_score"].between(0, 10).all()
+
+
+def test_surveys_satisfaction_in_range(surveys: pd.DataFrame) -> None:
+    assert surveys["overall_satisfaction"].between(1, 5).all()
+
+
+def test_surveys_date_after_contact(contacts: pd.DataFrame, surveys: pd.DataFrame) -> None:
+    merged = surveys.merge(contacts[["contact_id", "contact_date"]], on="contact_id")
+    survey_dates = pd.to_datetime(merged["survey_date"])
+    contact_dates = pd.to_datetime(merged["contact_date"])
+    assert (survey_dates > contact_dates).all()
