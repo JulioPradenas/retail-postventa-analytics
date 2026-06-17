@@ -231,6 +231,21 @@ uv run python scripts/load_to_bigquery.py
 cd dbt_project && dbt run && dbt test
 ```
 
+### Ejecutar el pipeline orquestado (Airflow)
+
+Las 9 tareas anteriores también corren end-to-end como el DAG
+`retail_postventa_pipeline` en Airflow standalone local:
+
+```bash
+export AIRFLOW_HOME="$PWD/orchestration/airflow"
+export PYTHONPATH="$PWD/orchestration/airflow/shims:$PWD"
+airflow standalone   # UI en http://localhost:8080
+airflow dags trigger retail_postventa_pipeline
+```
+
+Guía detallada (config de `airflow.cfg`, credenciales y workaround del segfault
+de `setproctitle` en macOS): [`docs/orchestration_local.md`](docs/orchestration_local.md).
+
 ### Calidad de código
 
 ```bash
