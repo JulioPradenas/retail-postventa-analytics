@@ -179,7 +179,8 @@ retail-postventa-analytics/
 │       └── retail_postventa_dag.py  # DAG Airflow: 9 tareas, trigger manual
 ├── docs/
 │   ├── insights.md           # Análisis del insight estrella OTD↔CPO
-│   └── ml_results.md         # Resultados del modelo predictivo
+│   ├── ml_results.md         # Resultados del modelo predictivo
+│   └── orchestration_local.md # Guía para correr el DAG en Airflow local
 └── tests/
     ├── test_setup.py
     ├── test_settings.py
