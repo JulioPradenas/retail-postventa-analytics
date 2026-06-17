@@ -9,8 +9,9 @@ Para lanzar: airflow dags trigger retail_postventa_pipeline
 from __future__ import annotations
 
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 from airflow import DAG
 from airflow.operators.bash import BashOperator
@@ -27,12 +28,37 @@ _ENV = {
     "PYTHONPATH": PROJECT_ROOT,
 }
 
+
+def alert_on_failure(context: dict[str, Any]) -> None:
+    """Notifica cuando una tarea falla tras agotar sus reintentos.
+
+    En local solo imprime; en producción se enviaría a Slack/email
+    (p. ej. requests.post(SLACK_WEBHOOK, json={"text": msg})).
+
+    Args:
+        context: Contexto de ejecución que Airflow inyecta en el callback.
+    """
+    ti = context["task_instance"]
+    msg = f"FALLO en {ti.dag_id}.{ti.task_id} (run {context['run_id']}) — log: {ti.log_url}"
+    print(msg)
+
+
+# Aplicado a las 9 tareas vía default_args: resiliencia ante fallas transitorias
+# (BigQuery 503, red) y alerta cuando una falla persiste.
+default_args = {
+    "retries": 2,
+    "retry_delay": timedelta(minutes=1),
+    "retry_exponential_backoff": True,
+    "on_failure_callback": alert_on_failure,
+}
+
 with DAG(
     dag_id="retail_postventa_pipeline",
     description="Pipeline end-to-end: datos sintéticos → BigQuery → dbt → ML",
     start_date=datetime(2024, 1, 1),
     schedule=None,
     catchup=False,
+    default_args=default_args,
     tags=["retail", "postventa", "portfolio"],
 ) as dag:
     generate_orders = BashOperator(

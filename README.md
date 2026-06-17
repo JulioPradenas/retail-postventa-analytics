@@ -243,6 +243,13 @@ airflow standalone   # UI en http://localhost:8080
 airflow dags trigger retail_postventa_pipeline
 ```
 
+**Resiliencia (diseño orientado a producción):** vía `default_args`, las 9
+tareas heredan `retries=2` con `retry_delay` y backoff exponencial (tolera
+fallas transitorias como un 503 de BigQuery) y un `on_failure_callback` que
+alerta cuando una tarea falla tras agotar sus reintentos (en producción se
+enviaría a Slack/email). Cada tarea actúa además como barrera de calidad: si
+`dbt_test` falla, `ml_predict` no se ejecuta sobre datos corruptos.
+
 Guía detallada (config de `airflow.cfg`, credenciales y workaround del segfault
 de `setproctitle` en macOS): [`docs/orchestration_local.md`](docs/orchestration_local.md).
 
