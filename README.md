@@ -17,6 +17,24 @@ Pipeline completo desde generación de datos sintéticos hasta dashboards ejecut
 
 ---
 
+## Dashboard Power BI
+
+[Ver dashboard en vivo](https://app.powerbi.com/view?r=eyJrIjoiYTNkNThlNzItZGRiZC00ZjNkLThiMDgtMTI0Nzc5M2Q2OTU1IiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9&pageName=6e17a280a66aa9e7942b)
+
+**Página 3 — Impacto del atraso (insight estrella)**
+
+![Insight OTD vs CPO](dashboards/powerbi/dashboard_insight_otd_cpo.png)
+
+**Página 4 — Devoluciones por motivo**
+
+![Devoluciones](dashboards/powerbi/dashboard_devoluciones.png)
+
+**Página 5 — Alertas diarias P1/P2**
+
+![Alertas](dashboards/powerbi/dashboard_alertas.png)
+
+---
+
 ## ⭐ Insight estrella
 
 Las órdenes que llegan con atraso generan contacto al postventa **2.4× más** que las entregadas en tiempo:
@@ -73,7 +91,7 @@ Generadores Python          BigQuery                    dbt                     
 | Visualización | **Looker Studio + Power BI** | Dos herramientas enterprise |
 | Lint + formato | Ruff | Reemplaza flake8 + black + isort |
 | Type check | mypy strict | Cobertura completa de tipos |
-| Tests | pytest | 35 tests unitarios en generators |
+| Tests | pytest | 41 tests (generators + ML) |
 | Hooks | pre-commit | Ruff + mypy en cada commit |
 | CI/CD | GitHub Actions | Push a main dispara pipeline |
 
@@ -153,8 +171,11 @@ retail-postventa-analytics/
 ├── dashboards/
 │   ├── looker/spec.md        # Especificación completa Looker Studio
 │   └── powerbi/spec.md       # Especificación completa Power BI
+├── ml/
+│   └── predict_contact.py    # Regresión logística P(contacto | orden), ROC-AUC 0.94
 ├── docs/
-│   └── insights.md           # Análisis del insight estrella OTD↔CPO
+│   ├── insights.md           # Análisis del insight estrella OTD↔CPO
+│   └── ml_results.md         # Resultados del modelo predictivo
 └── tests/
     ├── test_setup.py
     ├── test_settings.py
@@ -227,7 +248,7 @@ uv run pytest             # 35 tests
 | M4 | dbt dimensional (5 modelos, 30 tests) | ✅ Completo |
 | M5 | dbt marts KPIs (7 modelos, 27 tests) | ✅ Completo |
 | M6 | Dashboards Looker Studio + Power BI | ✅ Completo |
-| M7 | Modelo predictivo (regresión logística) | 🔜 Post-MVP |
+| M7 | Modelo predictivo (regresión logística) | ✅ Completo |
 | M8 | Orquestación con Airflow local | 🔜 Post-MVP |
 
 ---

@@ -26,14 +26,14 @@ pre-commit, GitHub Actions).
 
 | Módulo | Nombre | Estado |
 |---|---|---|
-| 0 | Setup base + tooling de calidad | 🚧 Por iniciar |
-| 1 | Generadores de datos sintéticos | 🚧 Por iniciar |
-| 2 | Carga a BigQuery raw | 🚧 Por iniciar |
-| 3 | dbt staging | 🚧 Por iniciar |
-| 4 | dbt dimensional (dim + fct) | 🚧 Por iniciar |
-| 5 | dbt marts (KPIs) | 🚧 Por iniciar |
-| 6 | Dashboards Looker + Power BI | 🚧 Por iniciar |
-| 7 | Modelo predictivo (regresión logística) | 🚧 Post-MVP |
+| 0 | Setup base + tooling de calidad | ✅ Completo |
+| 1 | Generadores de datos sintéticos | ✅ Completo |
+| 2 | Carga a BigQuery raw | ✅ Completo |
+| 3 | dbt staging | ✅ Completo |
+| 4 | dbt dimensional (dim + fct) | ✅ Completo |
+| 5 | dbt marts (KPIs) | ✅ Completo |
+| 6 | Dashboards Looker + Power BI | ✅ Completo |
+| 7 | Modelo predictivo (regresión logística) | ✅ Completo |
 | 8 | Orquestación con Airflow local | 🚧 Post-MVP |
 
 **Regla:** los módulos 🚧 NO se implementan sin confirmación explícita
