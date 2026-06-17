@@ -37,58 +37,76 @@ with DAG(
 ) as dag:
     generate_orders = BashOperator(
         task_id="generate_orders",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/data_gen/generar_orders.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/data_gen/generar_orders.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     generate_shipments = BashOperator(
         task_id="generate_shipments",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/data_gen/generar_shipments.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/data_gen/generar_shipments.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     generate_contacts = BashOperator(
         task_id="generate_contacts",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/data_gen/generar_contacts.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/data_gen/generar_contacts.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     generate_returns = BashOperator(
         task_id="generate_returns",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/data_gen/generar_returns.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/data_gen/generar_returns.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     generate_surveys = BashOperator(
         task_id="generate_surveys",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/data_gen/generar_surveys.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/data_gen/generar_surveys.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     load_bigquery = BashOperator(
         task_id="load_bigquery",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/scripts/load_to_bigquery.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/scripts/load_to_bigquery.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
-    _dbt_flags = f"--project-dir {DBT_PROJECT_DIR} --profiles-dir {DBT_PROFILES_DIR}"
+    _dbt_flags = f'--project-dir "{DBT_PROJECT_DIR}" --profiles-dir "{DBT_PROFILES_DIR}"'
 
     dbt_run = BashOperator(
         task_id="dbt_run",
-        bash_command=f"{DBT_BIN} run {_dbt_flags}",
+        bash_command=f'"{DBT_BIN}" run {_dbt_flags}',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     dbt_test = BashOperator(
         task_id="dbt_test",
-        bash_command=f"{DBT_BIN} test {_dbt_flags}",
+        bash_command=f'"{DBT_BIN}" test {_dbt_flags}',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     ml_predict = BashOperator(
         task_id="ml_predict",
-        bash_command=f"{PYTHON} {PROJECT_ROOT}/ml/predict_contact.py",
+        bash_command=f'"{PYTHON}" "{PROJECT_ROOT}/ml/predict_contact.py"',
         env=_ENV,
+        append_env=True,
+        cwd=PROJECT_ROOT,
     )
 
     # Generadores en secuencia: cada uno depende del CSV del anterior
