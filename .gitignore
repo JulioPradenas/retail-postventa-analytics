@@ -37,6 +37,12 @@ data_gen/csv/
 # MacOS
 .DS_Store
 
+# Airflow — base de datos local, logs, secrets
+orchestration/airflow/
+
+# Logs generados por scripts
+logs/
+
 # IDEs
 .vscode/
 .idea/

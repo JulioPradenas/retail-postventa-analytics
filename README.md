@@ -91,7 +91,8 @@ Generadores Python          BigQuery                    dbt                     
 | Visualización | **Looker Studio + Power BI** | Dos herramientas enterprise |
 | Lint + formato | Ruff | Reemplaza flake8 + black + isort |
 | Type check | mypy strict | Cobertura completa de tipos |
-| Tests | pytest | 41 tests (generators + ML) |
+| Tests | pytest | 46 tests (generators + ML + DAG) |
+| Orquestación | Airflow 2.11 standalone | DAG con 9 tareas en secuencia |
 | Hooks | pre-commit | Ruff + mypy en cada commit |
 | CI/CD | GitHub Actions | Push a main dispara pipeline |
 
@@ -173,6 +174,9 @@ retail-postventa-analytics/
 │   └── powerbi/spec.md       # Especificación completa Power BI
 ├── ml/
 │   └── predict_contact.py    # Regresión logística P(contacto | orden), ROC-AUC 0.94
+├── orchestration/
+│   └── dags/
+│       └── retail_postventa_dag.py  # DAG Airflow: 9 tareas, trigger manual
 ├── docs/
 │   ├── insights.md           # Análisis del insight estrella OTD↔CPO
 │   └── ml_results.md         # Resultados del modelo predictivo
@@ -249,7 +253,7 @@ uv run pytest             # 35 tests
 | M5 | dbt marts KPIs (7 modelos, 27 tests) | ✅ Completo |
 | M6 | Dashboards Looker Studio + Power BI | ✅ Completo |
 | M7 | Modelo predictivo (regresión logística) | ✅ Completo |
-| M8 | Orquestación con Airflow local | 🔜 Post-MVP |
+| M8 | Orquestación con Airflow local | ✅ Completo |
 
 ---
 

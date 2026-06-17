@@ -34,7 +34,7 @@ pre-commit, GitHub Actions).
 | 5 | dbt marts (KPIs) | ✅ Completo |
 | 6 | Dashboards Looker + Power BI | ✅ Completo |
 | 7 | Modelo predictivo (regresión logística) | ✅ Completo |
-| 8 | Orquestación con Airflow local | 🚧 Post-MVP |
+| 8 | Orquestación con Airflow local | ✅ Completo |
 
 **Regla:** los módulos 🚧 NO se implementan sin confirmación explícita
 del usuario. El plan en `PROJECT_PLAN.md` es referencia, no autorización.
