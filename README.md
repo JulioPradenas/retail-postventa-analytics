@@ -180,7 +180,8 @@ retail-postventa-analytics/
 ├── docs/
 │   ├── insights.md           # Análisis del insight estrella OTD↔CPO
 │   ├── ml_results.md         # Resultados del modelo predictivo
-│   └── orchestration_local.md # Guía para correr el DAG en Airflow local
+│   ├── orchestration_local.md # Guía para correr el DAG en Airflow local
+│   └── produccion_cloud.md   # Equivalencias del pipeline en GCP/AWS/Azure/K8s
 └── tests/
     ├── test_setup.py
     ├── test_settings.py
