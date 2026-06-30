@@ -179,6 +179,8 @@ retail-postventa-analytics/
 │       └── retail_postventa_dag.py  # DAG Airflow: 9 tareas, trigger manual
 ├── docs/
 │   ├── insights.md           # Análisis del insight estrella OTD↔CPO
+│   ├── glosario.md           # KPIs y términos (OTD, CPO, AHT, FCR...)
+│   ├── metricas_y_decisiones.md # Por qué y cómo de cada métrica/cálculo (SQL)
 │   ├── ml_results.md         # Resultados del modelo predictivo
 │   ├── orchestration_local.md # Guía para correr el DAG en Airflow local
 │   └── produccion_cloud.md   # Equivalencias del pipeline en GCP/AWS/Azure/K8s
